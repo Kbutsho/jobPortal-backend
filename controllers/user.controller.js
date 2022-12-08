@@ -87,7 +87,13 @@ exports.loginController = async (req, res) => {
                             status: 200,
                             message: "login successful",
                             data: {
-                                token, candidate
+                                token, user:{
+                                    email: candidate.email,
+                                    id: candidate.id,
+                                    userId: candidate.userId,
+                                    status: candidate.status,
+                                    role: candidate.role
+                                } 
                             }
                         })
                     }
@@ -106,7 +112,13 @@ exports.loginController = async (req, res) => {
                             status: 200,
                             message: "login successful",
                             data: {
-                                token, hiringManager
+                                token, user:{
+                                    email: hiringManager.email,
+                                    id: hiringManager.id,
+                                    userId: hiringManager.userId,
+                                    status: hiringManager.status,
+                                    role: hiringManager.role
+                                } 
                             }
                         })
                     }
@@ -127,7 +139,13 @@ exports.loginController = async (req, res) => {
                             status: 200,
                             message: "login successful",
                             data: {
-                                token, admin
+                                token,  user:{
+                                    email: admin.email,
+                                    id: admin.id,
+                                    userId: admin.userId,
+                                    status: admin.status,
+                                    role: admin.role
+                                } 
                             }
                         })
                     }

@@ -20,6 +20,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.7.0",
     "mongoose-unique-validator": "^3.1.0",
+    "pdfreader": "^3.0.0",
     "validator": "^13.7.0"
   },
   "devDependencies": {
