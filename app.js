@@ -10,13 +10,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(
     cors({
-      origin: ["", "http://localhost:3000"],
+      origin: ["http://localhost:3000",
+       "https://job-portal-frontend-one.vercel.app"],
       credentials: true,
     })
   );
 //route
 app.use("/api/user", userRouter)
-
 app.get('/api/', (req, res) => {
     res.json({
         'status': 200,
