@@ -1,10 +1,9 @@
 const errorFormatter = require("../middleware/errorFormatter");
 const Admin = require("../models/Admin.model");
 const Candidate = require("../models/Candidate.model");
-const Manager = require("../models/Manager.model");
-const User = require("../models/User.model");
+const HiringManager = require("../models/HiringManager.model");
 const { signupService, findUserByEmail } = require("../services/user.service");
-const { generateToken } = require("../utilities/token");
+const { generateToken } = require("../utils/token");
 
 exports.signUpController = async (req, res) => {
     try {
@@ -83,6 +82,7 @@ exports.loginController = async (req, res) => {
                     }
                     else {
                         const token = generateToken(candidate)
+                       
                         res.json({
                             status: 200,
                             message: "login successful",
@@ -92,21 +92,21 @@ exports.loginController = async (req, res) => {
                         })
                     }
                 }
-                else if (credential.role === "manager") {
-                    const manager = await Manager.findOne({userId: credential._id})
-                    if (manager.status != "active") {
+                else if (credential.role === "hiringManager") {
+                    const hiringManager = await HiringManager.findOne({userId: credential._id})
+                    if (hiringManager.status != "active") {
                         return res.json({
                             status: 403,
                             message: "your account is block! try again later!",
                         })
                     }
                     else {
-                        const token = generateToken(manager)
+                        const token = generateToken(hiringManager)
                         res.json({
                             status: 200,
                             message: "login successful",
                             data: {
-                                token, manager
+                                token, hiringManager
                             }
                         })
                     }
@@ -142,16 +142,20 @@ exports.loginController = async (req, res) => {
         })
     }
 }
-exports.getUser = async (req, res) =>{
+module.exports.verifyMe = async (req, res, next)=>{
     try {
-        const allUser = await User.find();
+        const user = await findUserByEmail(req.user?.email)
+        const {password: pwd, ...others} = user.toObject();
         res.json({
-            status: `user found ${allUser.length}`,
-            data: allUser
+            status: 200,
+            data: {
+                user: others
+            }
         })
     } catch (error) {
         res.json({
-            status: "user not found",
+            status: 500,
+            error: error.message
         })
     }
 }

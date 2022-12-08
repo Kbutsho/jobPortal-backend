@@ -1,6 +1,6 @@
 const Admin = require("../models/Admin.model")
 const Candidate = require("../models/Candidate.model")
-const Manager = require("../models/Manager.model")
+const HiringManager = require("../models/HiringManager.model")
 const User = require("../models/User.model")
 
 exports.signupService = async (data) => {
@@ -12,8 +12,8 @@ exports.signupService = async (data) => {
         )
         return result;
     }
-    else if (role === 'manager') {
-        await Manager.create(
+    else if (role === 'hiringManager') {
+        await HiringManager.create(
             { name, userId, email }
         )
         return result;

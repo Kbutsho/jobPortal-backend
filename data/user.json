@@ -1,0 +1,23 @@
+[
+    {
+        "name": "candidate",
+        "email": "candidate@gmail.com",
+        "password": "User@1234",
+        "confirmPassword": "User@1234",
+        "role": "candidate"
+    },
+    {
+        "name": "hiringManager",
+        "email": "manager@gmail.com",
+        "password": "User@1234",
+        "confirmPassword": "User@1234",
+        "role": "hiringManager"
+    },
+    {
+        "name": "admin",
+        "email": "admin@gmail.com",
+        "password": "User@1234",
+        "confirmPassword": "User@1234",
+        "role": "admin"
+    }
+]

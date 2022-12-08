@@ -1,0 +1,24 @@
+[
+    {
+      "name": "Software Engineer",
+      "jobType": "full-time",
+      "salary": 30000,
+      "location": "uttara",
+      "vacancy": 2,
+      "deadline": "2002/12/09",
+      "Skills": [
+        "React.js",
+        "Next.js",
+        "Node.js",
+        "MongoDB",
+        "Bootstrap"
+      ],
+      "hiringManager": "634c2b4c6f8804d675439df0", 
+      "companyName": "Programing Hero",
+      "companyDetails": "Programming Hero is one of the best software company",
+      "jobDescription": "We need a Fullstack Developer",
+      "jobResponsibilities": "Dedicated teamwork and punctual",
+      "additionalRequirements": "html, css",
+      "benefits": "half yearly bonus"
+    }
+  ]
