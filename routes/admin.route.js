@@ -7,7 +7,7 @@ const adminRouter = express.Router()
 adminRouter.route('/candidates')
 .get(authentication, authorization("admin"), getAllCandidate)
 
-adminRouter.route('/candidate')
+adminRouter.route('/candidate/:id')
 .get(authentication, authorization("admin"), getCandidateById)
 
 adminRouter.route('/managers')
