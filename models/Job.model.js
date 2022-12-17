@@ -76,7 +76,7 @@ const jobSchema = mongoose.Schema({
         ref: "Application"
     }],
     Skills: {
-        type: Array,
+        type: String,
         required: [true, "skills is required!"]
     },
     deadline: {
