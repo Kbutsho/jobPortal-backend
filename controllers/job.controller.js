@@ -159,7 +159,7 @@ exports.applyJob = async (req, res) => {
                 res.json({
                     "status": 400,
                     "message": "failed!",
-                    error: (error.message)
+                    error: errorFormatter(error.message)
                 })
             }
         } else {
