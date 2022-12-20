@@ -1,10 +1,11 @@
 const errorFormatter = require("../middleware/errorFormatter")
 const {
-    createJobService, getAllJobService, getJobById, updateJobById, applyJobService
+    createJobService, getAllJobService, getJobById, updateJobById, applyJobService, appliedJobService
 } = require("../services/job.service")
 const jwt = require('jsonwebtoken');
 const Job = require("../models/Job.model");
 const mongoose = require('mongoose');
+const Application = require("../models/Application.model");
 
 exports.createJob = async (req, res) => {
     try {
@@ -119,6 +120,7 @@ exports.updateJob = async (req, res) => {
     }
 }
 exports.applyJob = async (req, res) => {
+   
     const { id } = req.params
     const validId = mongoose.Types.ObjectId.isValid(id);
     if (validId) {
@@ -128,10 +130,11 @@ exports.applyJob = async (req, res) => {
                 const { authorization } = req.headers
                 const token = authorization.split(' ')[1]
                 const { id: userId } = jwt.verify(token, process.env.TOKEN_SECRET);
+                const url = req.protocol + '://' + req.get('host')
                 const jobData = {
                     name: req.body.name,
                     address: req.body.address,
-                    resume: req.body.resume,
+                    resume: url + '/public/' + req.file.filename,
                     jobId: id,
                     candidateId: userId
                 }
@@ -153,7 +156,8 @@ exports.applyJob = async (req, res) => {
                 res.json({
                     "status": 200,
                     "message": "application successful!",
-                    "data": application
+                    "data": application,
+                    "resume": application.resume
                 })
             } catch (error) {
                 res.json({
@@ -176,5 +180,13 @@ exports.applyJob = async (req, res) => {
             "error": `${id} is not a valid object id!`
         })
     }
+}
+
+exports.getAppliedJob = async (req,res) =>{
+ const data = await appliedJobService()
+ res.json({
+    "total application": data.length,
+    data: data
+ })
 }
 

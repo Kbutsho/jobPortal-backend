@@ -29,7 +29,7 @@ const applicationSchema = mongoose.Schema({
     "resume": {
         type: String,
         required: [true, "your resume is required"],
-        validate: [validator.isURL, "Please provide valid urls"]
+        // validate: [validator.isURL, "Please provide valid urls"]
     }
 }, {
     timestamps: true

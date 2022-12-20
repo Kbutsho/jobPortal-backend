@@ -7,12 +7,13 @@ const adminRouter = require('./routes/admin.route');
 const fs = require('fs');
 require("dotenv").config();
 const bodyParser = require("body-parser");
-const { PdfReader } = "pdfreader";
 
 const app = express();
+app.use('/public', express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 // app.use(
 //     cors({
 //         origin: ["http://localhost:3000",

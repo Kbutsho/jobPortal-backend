@@ -43,8 +43,8 @@ exports.applyJobService = async (id, data, userId) => {
             padTo2Digits(date.getDate()),
         ].join('-');
     }
-    const getDate = formatDate(getData.deadline)
-    const nowDate = formatDate(new Date())
+    const getDate = new Date(formatDate(getData.deadline))
+    const nowDate = new Date(formatDate(new Date()))
     if (getDate > nowDate) {
         let candidate = await Job.findOne({ _id: id }).select('appliedCandidate')
         const applied = candidate.appliedCandidate
@@ -114,4 +114,7 @@ exports.applyJobService = async (id, data, userId) => {
         }
     }
 
+}
+exports.appliedJobService = async ()=>{
+    return await Application.find({})
 }
