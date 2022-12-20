@@ -14,19 +14,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// app.use(
-//     cors({
-//         origin: ["http://localhost:3000",
-//             "https://job-portal-frontend-one.vercel.app"],
-//         credentials: true,
-//     })
-// );
 app.use(
     cors({
-        origin: "*",
+        origin: ["http://localhost:3000",
+            "https://job-portal-frontend-one.vercel.app", "https://kbutsho-job-portal.netlify.app"],
         credentials: true,
     })
 );
+// app.use(
+//     cors({
+//         origin: "*",
+//         credentials: true,
+//     })
+// );
 
 //route
 app.use("/api/user", userRouter)
