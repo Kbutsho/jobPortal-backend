@@ -1,5 +1,5 @@
 const express = require("express");
-const { getApplicationByCandidate, getAppDetailsById, updateApplicationById, deleteApplication } = require("../controllers/Application.Controller");
+const { getApplicationByCandidate, getAppDetailsById, updateApplicationById, deleteApplication } = require("../controllers/application.Controller");
 const authentication = require("../middleware/authentication");
 const authorization = require("../middleware/authorization");
 const candidateRoute = express.Router();

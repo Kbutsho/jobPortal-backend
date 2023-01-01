@@ -1,5 +1,5 @@
 const express = require('express');
-const { getApplicationByManager, getApplicationByJob, getAppDetailsById, deleteApplication } = require('../controllers/Application.Controller');
+const { getApplicationByManager, getApplicationByJob, getAppDetailsById, deleteApplication } = require('../controllers/application.Controller');
 const { hiringManagerJobs, hiringManagerJobById, updateManagerApplicationById } = require('../controllers/hiringManager.controller');
 const authentication = require('../middleware/authentication');
 const authorization = require('../middleware/authorization');
