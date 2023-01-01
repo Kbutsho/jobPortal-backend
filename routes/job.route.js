@@ -1,11 +1,12 @@
 const express = require('express');
 const {
-    createJob, getJobs, getJobById, updateJob, applyJob, getAppliedJob
+    createJob, getJobs, getJobById, updateJob, applyJob, deleteJob
 }
     = require('../controllers/job.controller');
 const authorization = require('../middleware/authorization');
 const authentication = require("../middleware/authentication");
 const upload = require('../middleware/fileUpload');
+const { getAppliedJob } = require('../controllers/Application.Controller');
 const jobRouter = express.Router();
 
 jobRouter.route('/')
@@ -18,8 +19,7 @@ jobRouter.route('/:id/apply')
 
 jobRouter.route('/:id')
     .get(getJobById)
-    .patch(updateJob)
-
-
+    .patch(updateJob, authentication, authorization("hiringManager"))
+    .delete(deleteJob, authentication, authorization("hiringManager"))
 
 module.exports = jobRouter

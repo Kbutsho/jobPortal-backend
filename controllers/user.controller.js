@@ -1,7 +1,4 @@
 const errorFormatter = require("../middleware/errorFormatter");
-const Admin = require("../models/Admin.model");
-const Candidate = require("../models/Candidate.model");
-const HiringManager = require("../models/HiringManager.model");
 const { signupService, findUserByEmail } = require("../services/user.service");
 const { generateToken } = require("../utils/token");
 
@@ -52,8 +49,8 @@ exports.loginController = async (req, res) => {
             })
         }
         else {
-            const credential = await findUserByEmail(email);
-            if (!credential) {
+            const user = await findUserByEmail(email);
+            if (!user) {
                 return res.json({
                     "status": 401,
                     "message": "no user found!",
@@ -62,94 +59,124 @@ exports.loginController = async (req, res) => {
                     }
                 })
             } else {
-                const isPasswordValid = credential.comparePassword(password, credential.password);
+                const isPasswordValid = user.comparePassword(password, user.password);
                 if (!isPasswordValid) {
                     return res.json({
                         "status": 403,
-                        "message": "password not match!",
+                        "message": "login failed!",
                         "error": {
                             "password": "password not match!"
                         }
                     })
-                }
-                if (credential.role === "candidate") { 
-                    const candidate = await Candidate.findOne({userId: credential._id})
-                    if (candidate.status != "active") {
-                        return res.json({
-                            status: 403,
-                            message: "your account is block! try again later!",
-                        })
-                    }
-                    else {
-                        const token = generateToken(candidate)
-                       
-                        res.json({
-                            status: 200,
-                            message: "login successful",
-                            data: {
-                                token, user:{
-                                    email: candidate.email,
-                                    id: candidate.id,
-                                    userId: candidate.userId,
-                                    status: candidate.status,
-                                    role: candidate.role
-                                } 
-                            }
-                        })
-                    }
-                }
-                else if (credential.role === "hiringManager") {
-                    const hiringManager = await HiringManager.findOne({userId: credential._id})
-                    if (hiringManager.status != "active") {
-                        return res.json({
-                            status: 403,
-                            message: "your account is block! try again later!",
-                        })
-                    }
-                    else {
-                        const token = generateToken(hiringManager)
-                        res.json({
-                            status: 200,
-                            message: "login successful",
-                            data: {
-                                token, user:{
-                                    email: hiringManager.email,
-                                    id: hiringManager.id,
-                                    userId: hiringManager.userId,
-                                    status: hiringManager.status,
-                                    role: hiringManager.role
-                                } 
-                            }
-                        })
-                    }
+                } else if (user.status === "block") {
+                    return res.json({
+                        "status": 403,
+                        "message": "login failed!",
+                        "error": {
+                            "email": "your account is block!"
+                        }
+                    })
+                } else if (user.status === "inactive") {
+                    return res.json({
+                        "status": 403,
+                        "message": "login failed!",
+                        "error": {
+                            "email": "your account is not active!"
+                        }
+                    })
                 } else {
-                    const admin = await Admin.findOne({userId: credential._id})
-                    if (admin?.status != "active") {
-                        return res.json({
-                            status: 403,
-                            message: "try again later!",
-                            "error":{
-                                "email": "account is block!"
+                    const token = generateToken(user)
+                    res.json({
+                        status: 200,
+                        message: "login successful!",
+                        data: {
+                            token, user: {
+                                email: user.email,
+                                id: user.id,
+                                status: user.status,
+                                role: user.role
                             }
-                        })
-                    }
-                    else {
-                        const token = generateToken(admin)
-                        res.json({
-                            status: 200,
-                            message: "login successful",
-                            data: {
-                                token,  user:{
-                                    email: admin.email,
-                                    id: admin.id,
-                                    userId: admin.userId,
-                                    status: admin.status,
-                                    role: admin.role
-                                } 
-                            }
-                        })
-                    }
+                        }
+                    })
                 }
+
+                // if (credential.role === "candidate") { 
+                //     const candidate = await Candidate.findOne({userId: credential._id})
+                //     if (candidate.status != "active") {
+                //         return res.json({
+                //             status: 403,
+                //             message: "your account is block! try again later!",
+                //         })
+                //     }
+                //     else {
+                //         const token = generateToken(candidate)
+                //         res.json({
+                //             status: 200,
+                //             message: "login successful",
+                //             data: {
+                //                 token, user:{
+                //                     email: candidate.email,
+                //                     id: candidate.id,
+                //                     userId: candidate.userId,
+                //                     status: candidate.status,
+                //                     role: candidate.role
+                //                 } 
+                //             }
+                //         })
+                //     }
+                // }
+                // else if (credential.role === "hiringManager") {
+                //     const hiringManager = await HiringManager.findOne({userId: credential._id})
+                //     if (hiringManager.status != "active") {
+                //         return res.json({
+                //             status: 403,
+                //             message: "your account is block! try again later!",
+                //         })
+                //     }
+                //     else {
+                //         const token = generateToken(hiringManager)
+                //         res.json({
+                //             status: 200,
+                //             message: "login successful",
+                //             data: {
+                //                 token, user:{
+                //                     email: hiringManager.email,
+                //                     id: hiringManager.id,
+                //                     userId: hiringManager.userId,
+                //                     status: hiringManager.status,
+                //                     role: hiringManager.role
+                //                 } 
+                //             }
+                //         })
+                //     }
+                // } else {
+                //     const admin = await Admin.findOne({userId: credential._id})
+                //     if (admin?.status != "active") {
+                //         return res.json({
+                //             status: 403,
+                //             message: "try again later!",
+                //             "error":{
+                //                 "email": "account is block!"
+                //             }
+                //         })
+                //     }
+                //     else {
+                //         const token = generateToken(admin)
+                //         res.json({
+                //             status: 200,
+                //             message: "login successful",
+                //             data: {
+                //                 token,  user:{
+                //                     email: admin.email,
+                //                     id: admin.id,
+                //                     userId: admin.userId,
+                //                     status: admin.status,
+                //                     role: admin.role
+                //                 } 
+                //             }
+                //         })
+                //     }
+                // }
             }
         }
     } catch (error) {
@@ -160,10 +187,10 @@ exports.loginController = async (req, res) => {
         })
     }
 }
-module.exports.verifyMe = async (req, res, next)=>{
+module.exports.verifyMe = async (req, res, next) => {
     try {
         const user = await findUserByEmail(req.user?.email)
-        const {password: pwd, ...others} = user.toObject();
+        const { password: pwd, ...others } = user.toObject();
         res.json({
             status: 200,
             data: {

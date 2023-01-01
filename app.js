@@ -7,6 +7,7 @@ const adminRouter = require('./routes/admin.route');
 const fs = require('fs');
 require("dotenv").config();
 const bodyParser = require("body-parser");
+const candidateRoute = require('./routes/candidate.route');
 
 const app = express();
 app.use('/public', express.static('public'));
@@ -33,6 +34,7 @@ app.use("/api/user", userRouter)
 app.use("/api/jobs", jobRouter)
 app.use("/api/manager", managerRouter)
 app.use("/api/admin", adminRouter)
+app.use("/api/candidate", candidateRoute)
 
 app.get('/api/', (req, res) => {
     fs.readFile('views/documentation.pdf', function (err, data) {

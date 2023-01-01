@@ -12,7 +12,7 @@ const jobSchema = mongoose.Schema({
     "hiringManager": {
         type: ObjectId,
         required: [true, "Hiring manager id is required!"],
-        ref: "HiringManager"
+        ref: "User"
     },
     companyName: {
         type: String,
@@ -37,7 +37,6 @@ const jobSchema = mongoose.Schema({
         maxLength: [1000, "job responsibilities field is too large!"],
         trim: true
     },
-
     additionalRequirements: {
         type: String,
         required: [true, "additional requirements is required!"]
@@ -67,14 +66,6 @@ const jobSchema = mongoose.Schema({
         type: String,
         required: [true, "benefits is required!"]
     },
-    "appliedCandidate":[{
-        type: ObjectId,
-        ref: "Candidate"
-    }],
-    "applicationId":[{
-        type: ObjectId,
-        ref: "Application"
-    }],
     Skills: {
         type: String,
         required: [true, "skills is required!"]
@@ -82,7 +73,15 @@ const jobSchema = mongoose.Schema({
     deadline: {
         type: Date,
         required: [true, "job deadline is required!"]
-    }
+    },
+    appliedCandidate: [{
+        type: ObjectId,
+        ref: "User"
+    }],
+    applicationId: [{
+        type: ObjectId,
+        ref: "Application"
+    }],
 },
     {
         timestamps: true

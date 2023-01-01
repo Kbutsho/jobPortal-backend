@@ -17,6 +17,16 @@ const userSchema = mongoose.Schema({
         trim: true,
         lowercase: true
     },
+    phone: {
+        type: String,
+        maxLength: [11, "provide a valid phone number!"],
+        minLength: [11, "provide a valid phone number!"],
+        required: [true, "phone number is required!"],
+        unique: true,
+    },
+    address: {
+        type: String
+    },
     password: {
         type: String,
         required: [true, "password is required!"],
@@ -43,15 +53,22 @@ const userSchema = mongoose.Schema({
             message: "confirm password not match!"
         }
     },
+    status: {
+        type: String,
+        default: "active",
+        enum: {
+            values: ["active", "inactive", "block"],
+            message: "{VALUE} is not a valid status!"
+        },
+    }, 
     role: {
         type: String,
-        required: [true, "role is required"],
+        required: [true, "role is required!"],
         enum: {
             values: ["candidate", "hiringManager", "admin"],
-            message: "{VALUE} is not a valid role"
-        },
-        //default: "candidate"
-    },
+            message: "{VALUE} is not a valid role!"
+        }
+    }
 }, {
     timestamps: true
 })
@@ -68,8 +85,7 @@ userSchema.methods.comparePassword = (password, hash) => {
     const isPasswordValid = bcrypt.compareSync(password, hash)
     return isPasswordValid;
 }
-// uniqueValidator.defaults.message = '{PATH} {VALUE} already exist!'
-uniqueValidator.defaults.message = '{PATH} already exist!'
+uniqueValidator.defaults.message = '{PATH} {VALUE} already exist!'
 userSchema.plugin(uniqueValidator);
 
 const User = mongoose.model("User", userSchema);

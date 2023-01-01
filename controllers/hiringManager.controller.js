@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
-const { hiringManagerJobsService, hiringManagerJobByIdService } = require('../services/hiringManager.service');
+const { hiringManagerJobsService, hiringManagerJobByIdService, applicationUpdateByManagerService } = require('../services/hiringManager.service');
+const mongoose = require('mongoose');
+const Application = require('../models/Application.model');
+const errorFormatter = require('../middleware/errorFormatter');
 
 exports.hiringManagerJobs = async (req, res) => {
     let token
@@ -53,4 +56,46 @@ exports.hiringManagerJobById = async (req, res) => {
     }
 
 
+}
+exports.updateManagerApplicationById = async (req, res) => {
+    const { id } = req.params;
+    const validId = mongoose.Types.ObjectId.isValid(id);
+    if (validId) {
+        const app = await Application.findById(id).select('_id').lean();
+        if (app) {
+            try {
+                const {result,app} = await applicationUpdateByManagerService(id, req.body);
+                if (!result) {
+                    return res.json({
+                        status: 400,
+                        "message": "failed",
+                        "error": "application is upto date!"
+                    })
+                }
+                res.json({
+                    status: 200,
+                    "message": "application update successful!",
+                    data: app
+                })
+            } catch (error) {
+                res.json({
+                    "status": 400,
+                    "message": "failed!",
+                    error: errorFormatter(error.message)
+                })
+            }
+        } else {
+            res.json({
+                "status": 400,
+                "message": "application not found!",
+                "error": `${id} is not a valid application id!`
+            })
+        }
+    } else {
+        res.json({
+            "status": 400,
+            "message": "application not found!",
+            "error": `${id} is not a valid object id!`
+        })
+    }
 }

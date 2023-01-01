@@ -1,7 +1,5 @@
-
 const Application = require("../models/Application.model");
 const Job = require("../models/Job.model");
-const Candidate = require("../models/Candidate.model");
 
 exports.createJobService = async (data) => {
     const result = await Job.create(data)
@@ -62,11 +60,10 @@ exports.applyJobService = async (id, data, userId) => {
                 }
             }
             if (counter === applied.length) {
-                console.log("2");
                 const applicationData = {
                     name: data.name,
                     email: data.email,
-                    address: data.address,
+                    coverLetter: data.coverLetter,
                     resume: data.resume,
                     jobId: data.jobId,
                     hiringManagerId: getData.hiringManager,
@@ -79,17 +76,17 @@ exports.applyJobService = async (id, data, userId) => {
                     { _id: id },
                     { $push: { appliedCandidate: userId, applicationId: applicationId } }
                 )
-                await Candidate.updateOne(
-                    { _id: userId },
-                    { $push: { appliedJob: id } }
-                )
+                // await Candidate.updateOne(
+                //     { _id: userId },
+                //     { $push: { appliedJob: id } }
+                // )
                 return application;
             }
         } else {
             const applicationData = {
                 name: data.name,
                 email: data.email,
-                address: data.address,
+                coverLetter: data.coverLetter,
                 resume: data.resume,
                 jobId: data.jobId,
                 hiringManagerId: getData.hiringManager,
@@ -102,10 +99,10 @@ exports.applyJobService = async (id, data, userId) => {
                 { _id: id },
                 { $push: { appliedCandidate: userId, applicationId: applicationId } }
             )
-            await Candidate.updateOne(
-                { _id: userId },
-                { $push: { appliedJob: id } }
-            )
+            // await Candidate.updateOne(
+            //     { _id: userId },
+            //     { $push: { appliedJob: id } }
+            // )
             return application;
         }
     } else {
@@ -115,6 +112,13 @@ exports.applyJobService = async (id, data, userId) => {
     }
 
 }
-exports.appliedJobService = async ()=>{
-    return await Application.find({})
+// exports.getAllApplicationByJobService = async (jobId) =>{
+//     await Job.findById(jobId, '-hiringManager -companyName -companyDetails -jobDescription -jobResponsibilities -additional').populate('applicationId')
+// }
+
+exports.deleteJobService = async (jobId) =>{
+    const result = await Job.deleteOne({_id: jobId})
+    await Application.deleteMany({_jobId: jobId})
+    return result;
 }
+

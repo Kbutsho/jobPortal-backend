@@ -1,11 +1,10 @@
 const errorFormatter = require("../middleware/errorFormatter")
 const {
-    createJobService, getAllJobService, getJobById, updateJobById, applyJobService, appliedJobService
+    createJobService, getAllJobService, getJobById, updateJobById, applyJobService, getJobsByManagerService, deleteJobService
 } = require("../services/job.service")
 const jwt = require('jsonwebtoken');
 const Job = require("../models/Job.model");
 const mongoose = require('mongoose');
-const Application = require("../models/Application.model");
 
 exports.createJob = async (req, res) => {
     try {
@@ -19,13 +18,12 @@ exports.createJob = async (req, res) => {
         res.json({
             status: 400,
             message: "job added failed",
-            data: errorFormatter(error.message)
+            error: errorFormatter(error.message)
         })
     }
 }
 exports.getJobs = async (req, res) => {
     try {
-
         let queryObject = { ...req.query }
         // exclude -> page, limit, sort
         const excludeFields = ["page", "limit", "sort"];
@@ -115,28 +113,44 @@ exports.updateJob = async (req, res) => {
         res.json({
             status: 400,
             "message": "failed",
-            "error": error.message
+            "error": errorFormatter(error.message)
+        })
+    }
+}
+exports.deleteJob = async (req, res) => {
+    try {
+        const { id } = req.params
+        await deleteJobService(id);
+        res.json({
+            "message": "job delete successfully!"
+        })
+    } catch (error) {
+        res.json({
+            "message": "failed",
+            error: error.message
         })
     }
 }
 exports.applyJob = async (req, res) => {
-   
     const { id } = req.params
     const validId = mongoose.Types.ObjectId.isValid(id);
     if (validId) {
         const job = await Job.findById(id).select('_id').lean();
         if (job) {
             try {
+                const appliedJob = await Job.findById(id);
                 const { authorization } = req.headers
                 const token = authorization.split(' ')[1]
                 const { id: userId } = jwt.verify(token, process.env.TOKEN_SECRET);
                 const url = req.protocol + '://' + req.get('host')
                 const jobData = {
                     name: req.body.name,
-                    address: req.body.address,
+                    email: req.body.email,
+                    coverLetter: req.body.coverLetter,
                     resume: url + '/public/' + req.file.filename,
-                    jobId: id,
-                    candidateId: userId
+                    jobId: appliedJob._id,
+                    hiringManagerId: appliedJob.hiringManager,
+                    candidateId: userId,
                 }
                 const application = await applyJobService(id, jobData, userId)
                 if (application.deadlineOver) {
@@ -146,7 +160,7 @@ exports.applyJob = async (req, res) => {
                         error: "deadline is over!"
                     })
                 }
-                if(application.alreadyApplied){
+                if (application.alreadyApplied) {
                     return res.json({
                         "status": 400,
                         "message": "failed!",
@@ -156,8 +170,7 @@ exports.applyJob = async (req, res) => {
                 res.json({
                     "status": 200,
                     "message": "application successful!",
-                    "data": application,
-                    "resume": application.resume
+                    "data": application
                 })
             } catch (error) {
                 res.json({
@@ -182,11 +195,12 @@ exports.applyJob = async (req, res) => {
     }
 }
 
-exports.getAppliedJob = async (req,res) =>{
- const data = await appliedJobService()
- res.json({
-    "total application": data.length,
-    data: data
- })
-}
+
+
+
+
+
+
+
+
 

@@ -1,35 +1,49 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema.Types;
 const validator = require('validator');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const applicationSchema = mongoose.Schema({
     "name": {
-        required: [true, "your name is required"],
+        required: [true, "your name is required!"],
         type: String,
     },
-    "address": {
-        required: [true, "your address is required"],
+    email: {
         type: String,
+        required: [true, "email is required!"]
     },
-    "candidateId": [{
+    coverLetter: {
+        type: String,
+        required: [true, "cover letter is required!"],
+        maxLength: [2000, "cover letter not more than 2000 character!"]
+    },
+    "candidateId": {
         type: ObjectId,
         required: true,
-        ref: "Candidate"
-    }],
-    "jobId": [{
+        ref: "User"
+    },
+    "jobId": {
         type: ObjectId,
         required: true,
-        ref: "Candidate"
-    }],
-    "hiringManagerId": [{
+        ref: "Job"
+    },
+    "hiringManagerId": {
         type: ObjectId,
         required: true,
-        ref: "HiringManager"
-    }],
+        ref: "User"
+    },
+    "status": {
+        type: String,
+        required: true,
+        enum: {
+            values: ["pending", "accept", "processing", "reject", "hired"],
+            message: "{VALUE} can't be a job type!"
+        },
+        default: "pending"
+    },
     "resume": {
         type: String,
-        required: [true, "your resume is required"],
-        // validate: [validator.isURL, "Please provide valid urls"]
+        required: [true, "your resume is required!"],
     }
 }, {
     timestamps: true

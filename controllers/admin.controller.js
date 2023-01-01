@@ -1,6 +1,6 @@
 const { getAllCandidateService, getCandidateById, getAllManagerService } = require("../services/admin.service")
 const mongoose = require('mongoose');
-const Candidate = require("../models/Candidate.model");
+const User = require("../models/User.model");
 
 exports.getAllCandidate = async (req, res) => {
     try {
@@ -21,7 +21,7 @@ exports.getCandidateById = async (req, res) => {
     const { id } = req.params;
     const validId = mongoose.Types.ObjectId.isValid(id);
     if (validId) {
-        const candidate = await Candidate.findById(id).select('_id').lean();
+        const candidate = await User.findById(id).select('_id').lean();
         if(candidate){
             try {
                 const data = await getCandidateById(id);
