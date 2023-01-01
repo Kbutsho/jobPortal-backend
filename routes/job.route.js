@@ -6,7 +6,7 @@ const {
 const authorization = require('../middleware/authorization');
 const authentication = require("../middleware/authentication");
 const upload = require('../middleware/fileUpload');
-const { getAppliedJob } = require('../controllers/Application.Controller');
+const { getAppliedJob } = require('../controllers/application.Controller');
 const jobRouter = express.Router();
 
 jobRouter.route('/')
