@@ -15,5 +15,4 @@ userRouter.route('/login')
 userRouter.route('/me')
     .get(authentication, verifyMe)
 
-
 module.exports = userRouter
